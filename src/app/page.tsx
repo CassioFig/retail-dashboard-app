@@ -1,71 +1,25 @@
-import { Fragment } from "react"
+'use client'
 
-const products = [
-  {
-    id: 1,
-    name: 'Earthen Bottle',
-    href: '#',
-    price: '$48',
-    imageSrc: 'https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-01.jpg',
-    imageAlt: 'Tall slender porcelain bottle with natural clay textured body and cork stopper.',
-  },
-  {
-    id: 2,
-    name: 'Nomad Tumbler',
-    href: '#',
-    price: '$35',
-    imageSrc: 'https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-02.jpg',
-    imageAlt: 'Olive drab green insulated bottle with flared screw lid and flat top.',
-  },
-  {
-    id: 3,
-    name: 'Focus Paper Refill',
-    href: '#',
-    price: '$89',
-    imageSrc: 'https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-03.jpg',
-    imageAlt: 'Person using a pen to cross a task off a productivity paper card.',
-  },
-  {
-    id: 4,
-    name: 'Machined Mechanical Pencil',
-    href: '#',
-    price: '$35',
-    imageSrc: 'https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-04.jpg',
-    imageAlt: 'Hand holding black machined steel mechanical pencil with brass tip and top.',
-  },
-
-  {
-    id: 5,
-    name: 'Portable Charger',
-    href: '#',
-    price: '$25',
-    imageSrc: 'https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-05.jpg',
-    imageAlt: 'Compact portable charger with multiple USB ports.',
-  },
-  {
-    id: 6,
-    name: 'Wireless Mouse',
-    href: '#',
-    price: '$45',
-    imageSrc: 'https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-04-image-card-06.jpg',
-    imageAlt: 'Ergonomic wireless mouse with customizable buttons.',
-  },
-]
-
-const links = [
-  { name: 'Open roles', href: '#' },
-  { name: 'Internship program', href: '#' },
-  { name: 'Our values', href: '#' },
-  { name: 'Meet our leadership', href: '#' },
-]
-const stats = [
-  { name: 'Offices worldwide', value: '12' },
-  { name: 'Full-time colleagues', value: '300+' },
-  { name: 'Hours per week', value: '40' },
-  { name: 'Paid time off', value: 'Unlimited' },
-]
+import { productsService } from "@/api"
+import { useApi } from "@/hooks"
+import { Product } from "@/interfaces"
+import { useEffect } from "react"
+import Image from "next/image"
 
 export default function Home() {
+
+  const {
+    execute: fetchProducts,
+    loading: loadingProducts,
+    data: products,
+  } = useApi<Product[], void>({
+    service: productsService.getProducts
+  })
+
+  useEffect(() => {
+    fetchProducts()
+  }, [])
+
   return (
     <div>
       <div className="relative isolate overflow-hidden bg-gray-900 py-24 sm:py-32">
@@ -112,15 +66,23 @@ export default function Home() {
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <h2 className="text-4xl font-bold pb-8">Products</h2>
         <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-          {products.map((product) => (
-            <a key={product.id} href={product.href} className="group">
-              <img
-                alt={product.imageAlt}
-                src={product.imageSrc}
-                className="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75 xl:aspect-7/8"
-              />
+          {products?.map((product, index) => (
+            <a key={product.id} href={"#"} className="group">
+              <div className="aspect-square w-full rounded-lg bg-gray-200 overflow-hidden">
+                <Image
+                  alt={product.name}
+                  src={product.imgUrl}
+                  width={400}
+                  height={400}
+                  className="w-full h-full object-cover group-hover:opacity-75 transition-opacity duration-200"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                  priority={index < 8}
+                  placeholder="blur"
+                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                />
+              </div>
               <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
-              <p className="mt-1 text-lg font-medium text-gray-900">{product.price}</p>
+              <p className="mt-1 text-lg font-medium text-gray-900">${product.price}</p>
             </a>
           ))}
         </div>
