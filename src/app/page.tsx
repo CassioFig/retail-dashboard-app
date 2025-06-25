@@ -3,10 +3,18 @@
 import { productsService } from "@/api"
 import { useApi } from "@/hooks"
 import { Product } from "@/interfaces"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
+import { ProductDialog } from "@/components"
 
 export default function Home() {
+  const [selectedProduct, setSelectedProduct] = useState<Product>({} as Product);
+  const [openProductDialog, setOpenProductDialog] = useState(false);
+
+  const handleSelectProduct = (product: Product) => {
+    setSelectedProduct(product);
+    setOpenProductDialog(true);
+  }
 
   const {
     execute: fetchProducts,
@@ -67,7 +75,7 @@ export default function Home() {
         <h2 className="text-4xl font-bold pb-8">Products</h2>
         <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
           {products?.map((product, index) => (
-            <a key={product.id} href={"#"} className="group">
+            <div key={product.id} className="group hover:cursor-pointer" onClick={() => handleSelectProduct(product)}>
               <div className="aspect-square w-full rounded-lg bg-gray-200 overflow-hidden">
                 <Image
                   alt={product.name}
@@ -83,10 +91,15 @@ export default function Home() {
               </div>
               <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
               <p className="mt-1 text-lg font-medium text-gray-900">${product.price}</p>
-            </a>
+            </div>
           ))}
         </div>
       </div>
+      <ProductDialog
+        product={selectedProduct}
+        onClose={() => setOpenProductDialog(false)}
+        open={openProductDialog}
+      />
     </div>
   )
 }
