@@ -1,18 +1,25 @@
-import { Product } from "@/interfaces"
+'use client'
+
+import { Product, Review } from "@/interfaces"
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react"
 import { StarIcon, XMarkIcon } from "@heroicons/react/24/outline"
+import { StarIcon as StarIconSolid } from "@heroicons/react/24/solid"
+import { useState } from "react"
 
 function classNames(...classes: any[]) {
 	return classes.filter(Boolean).join(' ')
 }
-
 
 type Props = {
 	product: Product
 	open: boolean
 	onClose: (open: boolean) => void
 }
+
 export const ProductDialog: React.FC<Props> = (props) => {
+	const [showReviews, setShowReviews] = useState(false)
+	const [reviews, setReviews] = useState<Review[]>([])
+
 	return (
 		<Dialog open={props.open} onClose={props.onClose} className="relative z-10">
 			<DialogBackdrop
@@ -69,12 +76,59 @@ export const ProductDialog: React.FC<Props> = (props) => {
 													))}
 												</div>
 												<p className="sr-only">{props.product?.rating?.average || 0} out of 5 stars</p>
-												<a href="#" className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500">
+												<button 
+													onClick={() => setShowReviews(!showReviews)}
+													className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none"
+												>
 													{props.product.rating?.count || 0} reviews
-												</a>
+												</button>
 											</div>
+
+											{/* Reviews Section */}
+											{showReviews && (
+												<div className="mt-6 border-t border-gray-200 pt-6">
+													<h5 className="text-lg font-medium text-gray-900 mb-4">Customer Reviews</h5>
+													<div className="space-y-4 max-h-64 overflow-y-auto">
+														{reviews.map((review) => (
+															<div key={review.id} className="border-b border-gray-100 pb-4 last:border-b-0">
+																<div className="flex items-start justify-between">
+																	<div className="flex-1">
+																		<div className="flex items-center space-x-2">
+																			<h6 className="text-sm font-medium text-gray-900">{review.user.firstName} {review.user.lastName}</h6>
+																		</div>
+																		<div className="flex items-center mt-1">
+																			<div className="flex items-center">
+																				{[0, 1, 2, 3, 4].map((rating) => (
+																					<StarIconSolid
+																						key={rating}
+																						className={classNames(
+																							review.rating > rating ? 'text-yellow-400' : 'text-gray-200',
+																							'h-4 w-4'
+																						)}
+																					/>
+																				))}
+																			</div>
+																			<span className="ml-2 text-xs text-gray-500">
+																				{new Date(review.createdAt).toLocaleDateString('en-US')}
+																			</span>
+																		</div>
+																		<p className="mt-2 text-sm text-gray-700">{review.comment}</p>
+																	</div>
+																</div>
+															</div>
+														))}
+													</div>
+													<button 
+														onClick={() => setShowReviews(false)}
+														className="mt-4 text-sm text-indigo-600 hover:text-indigo-500 focus:outline-none"
+													>
+														Hide reviews
+													</button>
+												</div>
+											)}
 										</div>
 
+										{/* Product Description */}
 										<div className="mt-6">
 											<h4 className="text-sm font-medium text-gray-900">Description</h4>
 											<div className="mt-3 space-y-6 text-sm text-gray-700">
