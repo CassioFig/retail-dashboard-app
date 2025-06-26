@@ -22,6 +22,19 @@ export const ProductDialog: React.FC<Props> = (props) => {
 	const { userSession, handleLoginDialogOpen, setCart } = useContext(SessionContext);
 	const [showReviews, setShowReviews] = useState(false);
 	const [reviews, setReviews] = useState<Review[]>([]);
+	const [showAddReview, setShowAddReview] = useState(false);
+	const [newReview, setNewReview] = useState({
+		rating: 5,
+		comment: ''
+	});
+	const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+
+	useEffect(() => {
+		if (showReviews && reviews.length === 0) {
+			// TODO: Implement API call to fetch reviews
+			// reviewServices.getProductReviews(props.product.id).then(setReviews);
+		}
+	}, [showReviews, props.product.id, reviews.length]);
 
 	const handleAddToBag = (e: React.MouseEvent<HTMLButtonElement>, product: Product) => {
 		e.preventDefault();
@@ -37,6 +50,24 @@ export const ProductDialog: React.FC<Props> = (props) => {
 				});
 		}
 	}
+
+	const handleSubmitReview = async (e: React.FormEvent) => {
+		e.preventDefault();
+		if (!userSession) {
+			handleLoginDialogOpen(true, 'signin');
+			return;
+		}
+
+		setIsSubmittingReview(true);
+		try {
+			setNewReview({ rating: 5, comment: '' });
+			setShowAddReview(false);
+		} catch (error) {
+			console.error('Error submitting review:', error);
+		} finally {
+			setIsSubmittingReview(false);
+		}
+	};
 
 	return (
 		<Dialog open={props.open} onClose={props.onClose} className="relative z-10">
@@ -105,7 +136,78 @@ export const ProductDialog: React.FC<Props> = (props) => {
 											{/* Reviews Section */}
 											{showReviews && (
 												<div className="mt-6 border-t border-gray-200 pt-6">
-													<h5 className="text-lg font-medium text-gray-900 mb-4">Customer Reviews</h5>
+													<div className="flex items-center justify-between mb-4">
+														<h5 className="text-lg font-medium text-gray-900">Customer Reviews</h5>
+														<button 
+															onClick={() => setShowAddReview(!showAddReview)}
+															className="text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none"
+														>
+															{showAddReview ? 'Cancel' : 'Write a Review'}
+														</button>
+													</div>
+
+													{/* Add Review Form */}
+													{showAddReview && (
+														<div className="mb-6 p-4 bg-gray-50 rounded-lg">
+															<form onSubmit={handleSubmitReview}>
+																<div className="mb-4">
+																	<label className="block text-sm font-medium text-gray-700 mb-2">
+																		Rating
+																	</label>
+																	<div className="flex items-center space-x-1">
+																		{[1, 2, 3, 4, 5].map((star) => (
+																			<button
+																				key={star}
+																				type="button"
+																				onClick={() => setNewReview({ ...newReview, rating: star })}
+																				className="focus:outline-none"
+																			>
+																				<StarIconSolid
+																					className={classNames(
+																						star <= newReview.rating ? 'text-yellow-400' : 'text-gray-200',
+																						'h-6 w-6 hover:text-yellow-400 transition-colors'
+																					)}
+																				/>
+																			</button>
+																		))}
+																		<span className="ml-2 text-sm text-gray-600">
+																			{newReview.rating} star{newReview.rating !== 1 ? 's' : ''}
+																		</span>
+																	</div>
+																</div>
+																<div className="mb-4">
+																	<label className="block text-sm font-medium text-gray-700 mb-2">
+																		Comment
+																	</label>
+																	<textarea
+																		value={newReview.comment}
+																		onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+																		rows={4}
+																		className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+																		placeholder="Share your thoughts about this product..."
+																		required
+																	/>
+																</div>
+																<div className="flex items-center space-x-3">
+																	<button
+																		type="submit"
+																		disabled={isSubmittingReview || !newReview.comment.trim()}
+																		className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+																	>
+																		{isSubmittingReview ? 'Submitting...' : 'Submit Review'}
+																	</button>
+																	<button
+																		type="button"
+																		onClick={() => setShowAddReview(false)}
+																		className="px-4 py-2 bg-gray-300 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-400 focus:outline-none"
+																	>
+																		Cancel
+																	</button>
+																</div>
+															</form>
+														</div>
+													)}
+
 													<div className="space-y-4 max-h-64 overflow-y-auto">
 														{reviews.map((review) => (
 															<div key={review.id} className="border-b border-gray-100 pb-4 last:border-b-0">
