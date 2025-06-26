@@ -1,5 +1,6 @@
 'use client'
 
+import { cartServices } from "@/api"
 import { SessionContext } from "@/contexts"
 import { Product, Review } from "@/interfaces"
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react"
@@ -18,16 +19,22 @@ type Props = {
 }
 
 export const ProductDialog: React.FC<Props> = (props) => {
-	const [show, setShow] = useState(props.open);
+	const { userSession, handleLoginDialogOpen, setCart } = useContext(SessionContext);
 	const [showReviews, setShowReviews] = useState(false);
 	const [reviews, setReviews] = useState<Review[]>([]);
-	const { userSession, handleLoginDialogOpen } = useContext(SessionContext);
 
 	const handleAddToBag = (e: React.MouseEvent<HTMLButtonElement>, product: Product) => {
 		e.preventDefault();
 		if (!userSession) {
 			props.onClose(false);
 			handleLoginDialogOpen(true, 'signin');
+		} else {
+			cartServices
+				.addToCart({ productId: product.id, quantity: 1, price: product.price })
+				.then((result) => {
+					setCart(result);
+					props.onClose(false);
+				});
 		}
 	}
 

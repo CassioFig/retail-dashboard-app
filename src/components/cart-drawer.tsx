@@ -26,6 +26,14 @@ export const CartDrawer: React.FC<Props> = (props) => {
 		},
 	})
 
+	const handleRemoveFromCart = (productId: string) => {
+		cartServices.deleteFromCard(productId)
+			.then((result) => {
+				setCart(result);
+				storageService.setItem<Cart>('cart', result);
+			});
+	}
+
 	useEffect(() => { !!cart?.id && fetchCart(); }, [cart?.id]);
 
 	return (
@@ -63,8 +71,8 @@ export const CartDrawer: React.FC<Props> = (props) => {
 										<div className="mt-8">
 											<div className="flow-root">
 												<ul role="list" className="-my-6 divide-y divide-gray-200">
-													{cart?.items.map((cartItem) => (
-														<li key={cartItem.product?.id} className="flex py-6">
+													{cart?.items.map((cartItem, index) => (
+														<li key={index} className="flex py-6">
 															<div className="size-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
 																<img alt={cartItem.product?.name} src={cartItem.product?.imgUrl} className="size-full object-cover" />
 															</div>
@@ -75,7 +83,7 @@ export const CartDrawer: React.FC<Props> = (props) => {
 																		<h3>
 																			<a href={"#"}>{cartItem.product?.name}</a>
 																		</h3>
-																		<p className="ml-4">{cartItem.product?.price}</p>
+																		<p className="ml-4">${cartItem.product?.price}</p>
 																	</div>
 																	{/* <p className="mt-1 text-sm text-gray-500">{cartItem.color}</p> */}
 																</div>
@@ -83,7 +91,11 @@ export const CartDrawer: React.FC<Props> = (props) => {
 																	<p className="text-gray-500">Qty {cartItem.quantity}</p>
 
 																	<div className="flex">
-																		<button type="button" className="font-medium text-indigo-600 hover:text-indigo-500">
+																		<button 
+																			type="button" 
+																			className="font-medium text-indigo-600 hover:text-indigo-500"
+																			onClick={() => handleRemoveFromCart(cartItem.productId)}
+																		>
 																			Remove
 																		</button>
 																	</div>

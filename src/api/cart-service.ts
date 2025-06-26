@@ -13,8 +13,14 @@ const getCart = async (): Promise<Cart> => {
 	return response.data;
 };
 
+const deleteFromCard = async (productId: string): Promise<Cart> => {
+	const response = await api.delete<Cart>(`${BASE_ROUTE}/product/${productId}`);
+	return response.data;
+}
+
 export const cartServices = {
 	addToCart,
 	getCart,
+	deleteFromCard
 }
 
