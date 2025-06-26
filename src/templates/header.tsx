@@ -1,11 +1,15 @@
 'use client'
 
 import { CartDrawer } from '@/components'
+import { SessionContext } from '@/contexts'
+import { UserSession } from '@/interfaces'
+import { storageService } from '@/services'
 import { MagnifyingGlassIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
-import { Fragment, useState } from 'react'
+import { Fragment, useContext, useEffect, useState } from 'react'
 
 export const Header: React.FC = () => {
-	const [open, setOpen] = useState(false)
+	const { cart, userSession } = useContext(SessionContext);
+	const [open, setOpen] = useState(false);
 
 	return (
 		<Fragment>
@@ -57,16 +61,22 @@ export const Header: React.FC = () => {
 								</div>
 
 								{/* Cart */}
-								<div className="ml-4 flow-root lg:ml-6">
-									<a href="#" className="group -m-2 flex items-center p-2" onClick={() => setOpen(true)}>
-										<ShoppingBagIcon
-											aria-hidden="true"
-											className="size-6 shrink-0 text-gray-400 group-hover:text-gray-500"
-										/>
-										<span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">0</span>
-										<span className="sr-only">items in cart, view bag</span>
-									</a>
-								</div>
+								{
+									userSession ? (
+										<div className="ml-4 flow-root lg:ml-6">
+											<a
+												href="#"
+												onClick={() => setOpen(true)}
+												className="group -m-2 flex items-center p-2"
+											>
+												<ShoppingBagIcon aria-hidden="true" className="size-6 text-gray-400 group-hover:text-gray-500" />
+												<span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
+													{cart?.totalItemCount || 0}
+												</span>
+											</a>
+										</div>
+									) : null
+								}
 							</div>
 						</div>
 					</div>
