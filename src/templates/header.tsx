@@ -1,6 +1,6 @@
 'use client'
 
-import { CartDrawer } from '@/components'
+import { CartDrawer, LoginDialog } from '@/components'
 import { SessionContext } from '@/contexts'
 import { UserSession } from '@/interfaces'
 import { storageService } from '@/services'
@@ -8,7 +8,7 @@ import { MagnifyingGlassIcon, ShoppingBagIcon } from '@heroicons/react/24/outlin
 import { Fragment, useContext, useEffect, useState } from 'react'
 
 export const Header: React.FC = () => {
-	const { cart, userSession } = useContext(SessionContext);
+	const { cart, userSession, handleLoginDialogOpen } = useContext(SessionContext);
 	const [open, setOpen] = useState(false);
 
 	return (
@@ -30,15 +30,23 @@ export const Header: React.FC = () => {
 							</div>
 
 							<div className="ml-auto flex items-center">
-								<div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-									<a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-800">
-										Sign in
-									</a>
-									<span aria-hidden="true" className="h-6 w-px bg-gray-200" />
-									<a href="#" className="text-sm font-medium text-gray-700 hover:text-gray-800">
-										Create account
-									</a>
-								</div>
+								{!userSession && (
+									<div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
+										<button
+											onClick={e => handleLoginDialogOpen(true, 'signin')}
+											className="text-sm font-medium text-gray-700 hover:text-gray-800"
+										>
+											Sign in
+										</button>
+										<span aria-hidden="true" className="h-6 w-px bg-gray-200" />
+										<button
+											onClick={e => handleLoginDialogOpen(true, 'signup')}
+											className="text-sm font-medium text-gray-700 hover:text-gray-800"
+										>
+											Create account
+										</button>
+									</div>
+								)}
 
 								<div className="hidden lg:ml-8 lg:flex">
 									<a href="#" className="flex items-center text-gray-700 hover:text-gray-800">
@@ -78,6 +86,22 @@ export const Header: React.FC = () => {
 									) : null
 								}
 							</div>
+							{userSession && (
+								<div className="ml-4 flex lg:ml-6">
+									<button
+										onClick={() => {
+											storageService.removeItem('user_session');
+											window.location.reload();
+										}}
+										className="p-2 text-gray-400 hover:text-gray-500"
+									>
+										<span className="sr-only">Logout</span>
+										<svg className="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+										</svg>
+									</button>
+								</div>
+							)}
 						</div>
 					</div>
 				</nav>

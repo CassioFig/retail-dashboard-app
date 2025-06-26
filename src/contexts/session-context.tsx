@@ -1,5 +1,6 @@
 'use client'
 
+import { LoginDialog } from "@/components";
 import { UserSession } from "@/interfaces";
 import { Cart } from "@/interfaces/cart";
 import { storageService } from "@/services";
@@ -10,6 +11,8 @@ interface SessionContextType {
 	setUserSession: (session: UserSession | null) => void;
 	cart: Cart | null;
 	setCart: (cart: Cart) => void;
+	loginDialogOpen: boolean;
+	handleLoginDialogOpen: (open: boolean, loginTab: 'signin' | 'signup') => void;
 }
 
 export const SessionContext = createContext<SessionContextType>({} as SessionContextType);
@@ -19,7 +22,14 @@ type Props = {
 }
 export const SessionProvider: React.FC<Props> = ({ children }) => {
 	const [userSession, setUserSession] = useState<UserSession | null>(null);
+	const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+	const [loginDefaultTab, setLoginDefaultTab] = useState<'signin' | 'signup'>('signin');
 	const [cart, setCart] = useState<Cart | null>(null);
+
+	const handleLoginDialogOpen = (open: boolean, loginTab: 'signin' | 'signup') => {
+		setLoginDialogOpen(open);
+		setLoginDefaultTab(loginTab);
+	};
 
 	useEffect(() => {
 		const session = storageService.getItem<UserSession>('user_session');
@@ -32,8 +42,15 @@ export const SessionProvider: React.FC<Props> = ({ children }) => {
 	}, [])
 
 	return (
-		<SessionContext.Provider value={{ userSession, setUserSession, cart, setCart }}>
-			{children}
+		<SessionContext.Provider value={{ userSession, setUserSession, cart, setCart, loginDialogOpen, handleLoginDialogOpen }}>
+			<>
+				{children}
+				<LoginDialog
+					open={loginDialogOpen}
+					onClose={() => setLoginDialogOpen(false)}
+					defaultTab={loginDefaultTab}
+				/>
+			</>
 		</SessionContext.Provider>
 	);
 };

@@ -1,10 +1,11 @@
 'use client'
 
+import { SessionContext } from "@/contexts"
 import { Product, Review } from "@/interfaces"
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react"
 import { StarIcon, XMarkIcon } from "@heroicons/react/24/outline"
 import { StarIcon as StarIconSolid } from "@heroicons/react/24/solid"
-import { useState } from "react"
+import { useContext, useEffect, useState } from "react"
 
 function classNames(...classes: any[]) {
 	return classes.filter(Boolean).join(' ')
@@ -17,8 +18,18 @@ type Props = {
 }
 
 export const ProductDialog: React.FC<Props> = (props) => {
-	const [showReviews, setShowReviews] = useState(false)
-	const [reviews, setReviews] = useState<Review[]>([])
+	const [show, setShow] = useState(props.open);
+	const [showReviews, setShowReviews] = useState(false);
+	const [reviews, setReviews] = useState<Review[]>([]);
+	const { userSession, handleLoginDialogOpen } = useContext(SessionContext);
+
+	const handleAddToBag = (e: React.MouseEvent<HTMLButtonElement>, product: Product) => {
+		e.preventDefault();
+		if (!userSession) {
+			props.onClose(false);
+			handleLoginDialogOpen(true, 'signin');
+		}
+	}
 
 	return (
 		<Dialog open={props.open} onClose={props.onClose} className="relative z-10">
@@ -141,6 +152,7 @@ export const ProductDialog: React.FC<Props> = (props) => {
 										<form>
 											<button
 												type="submit"
+												onClick={(e) => handleAddToBag(e, props.product)}
 												className="mt-6 flex w-full items-center justify-center rounded-md border border-transparent bg-black px-8 py-3 text-base font-medium text-white hover:cursor-pointer focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden"
 											>
 												Add to bag
