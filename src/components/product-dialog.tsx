@@ -1,6 +1,6 @@
 'use client'
 
-import { cartServices } from "@/api"
+import { cartServices, reviewServices } from "@/api"
 import { SessionContext } from "@/contexts"
 import { Product, Review } from "@/interfaces"
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react"
@@ -30,9 +30,8 @@ export const ProductDialog: React.FC<Props> = (props) => {
 	const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
 	useEffect(() => {
-		if (showReviews && reviews.length === 0) {
-			// TODO: Implement API call to fetch reviews
-			// reviewServices.getProductReviews(props.product.id).then(setReviews);
+		if (showReviews) {
+			reviewServices.getReviews(props.product.id).then(setReviews);
 		}
 	}, [showReviews, props.product.id, reviews.length]);
 
@@ -60,7 +59,11 @@ export const ProductDialog: React.FC<Props> = (props) => {
 
 		setIsSubmittingReview(true);
 		try {
-			setNewReview({ rating: 5, comment: '' });
+			await reviewServices.addReview({
+				productId: props.product.id,
+				rating: newReview.rating,
+				comment: newReview.comment.trim(),
+			});
 			setShowAddReview(false);
 		} catch (error) {
 			console.error('Error submitting review:', error);
@@ -86,7 +89,7 @@ export const ProductDialog: React.FC<Props> = (props) => {
 							<button
 								type="button"
 								onClick={() => props.onClose(false)}
-								className="absolute top-4 right-4 text-gray-400 hover:text-gray-500 sm:top-8 sm:right-6 md:top-6 md:right-6 lg:top-8 lg:right-8"
+								className="absolute top-4 right-4 text-gray-400 hover:text-gray-500 sm:top-8 sm:right-6 md:top-6 md:right-6 lg:top-8 lg:right-8 cursor-pointer"
 							>
 								<span className="sr-only">Close</span>
 								<XMarkIcon aria-hidden="true" className="size-6" />
@@ -114,11 +117,11 @@ export const ProductDialog: React.FC<Props> = (props) => {
 											<div className="flex items-center">
 												<div className="flex items-center">
 													{[0, 1, 2, 3, 4].map((rating) => (
-														<StarIcon
+														<StarIconSolid
 															key={rating}
 															aria-hidden="true"
 															className={classNames(
-																(props.product.rating?.average || 0) > rating ? 'text-gray-900' : 'text-gray-200',
+																(props.product.rating?.average || 0) > rating ? 'text-yellow-400' : 'text-gray-200',
 																'size-5 shrink-0',
 															)}
 														/>
@@ -127,7 +130,7 @@ export const ProductDialog: React.FC<Props> = (props) => {
 												<p className="sr-only">{props.product?.rating?.average || 0} out of 5 stars</p>
 												<button 
 													onClick={() => setShowReviews(!showReviews)}
-													className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none"
+													className="ml-3 text-sm font-medium text-black hover:text-gray-700 focus:outline-none cursor-pointer"
 												>
 													{props.product.rating?.count || 0} reviews
 												</button>
@@ -140,7 +143,7 @@ export const ProductDialog: React.FC<Props> = (props) => {
 														<h5 className="text-lg font-medium text-gray-900">Customer Reviews</h5>
 														<button 
 															onClick={() => setShowAddReview(!showAddReview)}
-															className="text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none"
+															className="text-sm font-medium text-black hover:text-gray-700 focus:outline-none cursor-pointer"
 														>
 															{showAddReview ? 'Cancel' : 'Write a Review'}
 														</button>
@@ -160,7 +163,7 @@ export const ProductDialog: React.FC<Props> = (props) => {
 																				key={star}
 																				type="button"
 																				onClick={() => setNewReview({ ...newReview, rating: star })}
-																				className="focus:outline-none"
+																				className="focus:outline-none cursor-pointer"
 																			>
 																				<StarIconSolid
 																					className={classNames(
@@ -192,14 +195,15 @@ export const ProductDialog: React.FC<Props> = (props) => {
 																	<button
 																		type="submit"
 																		disabled={isSubmittingReview || !newReview.comment.trim()}
-																		className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+																		onClick={handleSubmitReview}
+																		className="px-4 py-2 bg-black text-white text-sm font-medium rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
 																	>
 																		{isSubmittingReview ? 'Submitting...' : 'Submit Review'}
 																	</button>
 																	<button
 																		type="button"
 																		onClick={() => setShowAddReview(false)}
-																		className="px-4 py-2 bg-gray-300 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-400 focus:outline-none"
+																		className="px-4 py-2 bg-gray-300 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-400 focus:outline-none cursor-pointer"
 																	>
 																		Cancel
 																	</button>
@@ -240,7 +244,7 @@ export const ProductDialog: React.FC<Props> = (props) => {
 													</div>
 													<button 
 														onClick={() => setShowReviews(false)}
-														className="mt-4 text-sm text-indigo-600 hover:text-indigo-500 focus:outline-none"
+														className="mt-4 text-sm text-black hover:text-gray-700 focus:outline-none cursor-pointer"
 													>
 														Hide reviews
 													</button>
@@ -262,7 +266,7 @@ export const ProductDialog: React.FC<Props> = (props) => {
 											<button
 												type="submit"
 												onClick={(e) => handleAddToBag(e, props.product)}
-												className="mt-6 flex w-full items-center justify-center rounded-md border border-transparent bg-black px-8 py-3 text-base font-medium text-white hover:cursor-pointer focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden"
+												className="mt-6 flex w-full items-center justify-center rounded-md border border-transparent bg-black px-8 py-3 text-base font-medium text-white hover:cursor-pointer focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-hidden"
 											>
 												Add to bag
 											</button>
