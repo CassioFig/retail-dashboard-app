@@ -34,6 +34,22 @@ export const CartDrawer: React.FC<Props> = (props) => {
 			});
 	}
 
+	const handleCheckout = () => {
+		if (!!cart?.items && cart.items.length > 0) {
+			cartServices.checkout(cart)
+				.then((result) => {
+					if (result) {
+						setCart(result);
+						storageService.setItem<Cart>('cart', result);
+						props.onClose();
+					}
+				})
+				.catch((error) => {
+					console.error("Checkout failed:", error);
+				});
+		}
+	}
+
 	useEffect(() => { !!cart?.id && fetchCart(); }, [cart?.id]);
 
 	return (
@@ -59,7 +75,7 @@ export const CartDrawer: React.FC<Props> = (props) => {
 												<button
 													type="button"
 													onClick={() => props.onClose()}
-													className="relative -m-2 p-2 text-gray-400 hover:text-gray-500"
+													className="relative -m-2 p-2 text-gray-400 hover:text-gray-500 cursor-pointer"
 												>
 													<span className="absolute -inset-0.5" />
 													<span className="sr-only">Close panel</span>
@@ -71,12 +87,11 @@ export const CartDrawer: React.FC<Props> = (props) => {
 										<div className="mt-8">
 											<div className="flow-root">
 												<ul role="list" className="-my-6 divide-y divide-gray-200">
-													{cart?.items.map((cartItem, index) => (
+													{cart?.items?.map((cartItem, index) => (
 														<li key={index} className="flex py-6">
 															<div className="size-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
 																<img alt={cartItem.product?.name} src={cartItem.product?.imgUrl} className="size-full object-cover" />
 															</div>
-
 															<div className="ml-4 flex flex-1 flex-col">
 																<div>
 																	<div className="flex justify-between text-base font-medium text-gray-900">
@@ -93,7 +108,7 @@ export const CartDrawer: React.FC<Props> = (props) => {
 																	<div className="flex">
 																		<button 
 																			type="button" 
-																			className="font-medium text-indigo-600 hover:text-indigo-500"
+																			className="font-medium text-black hover:text-gray-700 cursor-pointer"
 																			onClick={() => handleRemoveFromCart(cartItem.productId)}
 																		>
 																			Remove
@@ -115,12 +130,13 @@ export const CartDrawer: React.FC<Props> = (props) => {
 										</div>
 										<p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
 										<div className="mt-6">
-											<a
-												href="#"
-												className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-xs hover:bg-indigo-700"
+											<button
+												type="button"
+												onClick={handleCheckout}
+												className="flex items-center justify-center rounded-md border border-transparent bg-black px-6 py-3 text-base font-medium text-white shadow-xs hover:bg-gray-800 cursor-pointer"
 											>
 												Checkout
-											</a>
+											</button>
 										</div>
 										<div className="mt-6 flex justify-center text-center text-sm text-gray-500">
 											<p>
@@ -128,7 +144,7 @@ export const CartDrawer: React.FC<Props> = (props) => {
 												<button
 													type="button"
 													onClick={() => props.onClose()}
-													className="font-medium text-indigo-600 hover:text-indigo-500"
+													className="font-medium text-black hover:text-gray-700 cursor-pointer"
 												>
 													Continue Shopping
 													<span aria-hidden="true"> &rarr;</span>

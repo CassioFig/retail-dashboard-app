@@ -18,9 +18,15 @@ const deleteFromCard = async (productId: string): Promise<Cart> => {
 	return response.data;
 }
 
+const checkout = async (request: Cart): Promise<Cart> => {
+	const response = await api.post<Cart>(`${BASE_ROUTE}/checkout`, request);
+	return response.data;
+};
+
 export const cartServices = {
 	addToCart,
 	getCart,
-	deleteFromCard
+	deleteFromCard,
+	checkout
 }
 

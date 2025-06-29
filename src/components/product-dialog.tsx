@@ -186,7 +186,7 @@ export const ProductDialog: React.FC<Props> = (props) => {
 																		value={newReview.comment}
 																		onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
 																		rows={4}
-																		className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+																		className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
 																		placeholder="Share your thoughts about this product..."
 																		required
 																	/>
