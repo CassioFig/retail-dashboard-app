@@ -8,6 +8,11 @@ const getProducts = async (): Promise<Product[]> => {
 	return response.data;
 }
 
+const addProductToStock = async (input: Pick<Product, 'id' | 'stock'>): Promise<void> => {
+	await api.post(`/admin${BASE_ROUTE}`, input);
+}
+
 export const productsService = {
 	getProducts,
+	addProductToStock,
 }

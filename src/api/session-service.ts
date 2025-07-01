@@ -13,14 +13,18 @@ type SignUpRequest = {
 const signUp = async (request: SignUpRequest): Promise<UserSession> => {
 	const response = await api.post<UserSession>(`${BASE_ROUTE}/signup`, request);
 	storageService.setItem('user_session', response.data);
-	window.location.reload();
+	if (response.data.isAdmin) {
+		window.location.href = '/admin';
+	} else { window.location.reload(); }
 	return response.data;
 }
 
 const signIn = async (email: string, password: string): Promise<UserSession> => {
 	const response = await api.post<UserSession>(`${BASE_ROUTE}/signin`, { email, password });
 	storageService.setItem('user_session', response.data);
-	window.location.reload();
+	if (response.data.isAdmin) {
+		window.location.href = '/admin';
+	} else { window.location.reload(); }
 	return response.data;
 }
 

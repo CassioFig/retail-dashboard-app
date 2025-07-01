@@ -3,13 +3,18 @@
 import { productsService } from "@/api"
 import { useApi } from "@/hooks"
 import { Product } from "@/interfaces"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import Image from "next/image"
 import { ProductDialog } from "@/components"
+import { SessionContext } from "@/contexts"
+import { useRouter } from "next/navigation"
 
 export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState<Product>({} as Product);
+  const { userSession } = useContext(SessionContext);
   const [openProductDialog, setOpenProductDialog] = useState(false);
+  const [isCheckingUser, setIsCheckingUser] = useState(true);
+  const router = useRouter();
 
   const handleSelectProduct = (product: Product) => {
     setSelectedProduct(product);
@@ -25,8 +30,21 @@ export default function Home() {
   })
 
   useEffect(() => {
-    fetchProducts()
-  }, [])
+    if (userSession?.isAdmin) {
+      router.push('/admin');
+      return;
+    }
+    setIsCheckingUser(false);
+    fetchProducts();
+  }, [userSession, router])
+
+  if (isCheckingUser) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-200 border-t-black"></div>
+      </div>
+    );
+  }
 
   return (
     <div>

@@ -70,7 +70,7 @@ export const Header: React.FC = () => {
 
 								{/* Cart */}
 								{
-									userSession ? (
+									userSession && !userSession.isAdmin ? (
 										<div className="ml-4 flow-root lg:ml-6">
 											<a
 												href="#"
