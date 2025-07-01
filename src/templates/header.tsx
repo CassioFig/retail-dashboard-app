@@ -19,11 +19,11 @@ export const Header: React.FC = () => {
 						<div className="flex h-16 items-center">
 							{/* Logo */}
 							<div className="ml-4 flex lg:ml-0">
-								<a href="#">
+								<a href="#" className="cursor-pointer">
 									<span className="sr-only">Your Company</span>
 									<img
 										alt=""
-										src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
+										src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=black&shade=900"
 										className="h-8 w-auto"
 									/>
 								</a>
@@ -34,14 +34,14 @@ export const Header: React.FC = () => {
 									<div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
 										<button
 											onClick={e => handleLoginDialogOpen(true, 'signin')}
-											className="text-sm font-medium text-gray-700 hover:text-gray-800"
+											className="text-sm font-medium text-gray-700 hover:text-gray-800 cursor-pointer"
 										>
 											Sign in
 										</button>
 										<span aria-hidden="true" className="h-6 w-px bg-gray-200" />
 										<button
 											onClick={e => handleLoginDialogOpen(true, 'signup')}
-											className="text-sm font-medium text-gray-700 hover:text-gray-800"
+											className="text-sm font-medium text-gray-700 hover:text-gray-800 cursor-pointer"
 										>
 											Create account
 										</button>
@@ -49,7 +49,7 @@ export const Header: React.FC = () => {
 								)}
 
 								<div className="hidden lg:ml-8 lg:flex">
-									<a href="#" className="flex items-center text-gray-700 hover:text-gray-800">
+									<a href="#" className="flex items-center text-gray-700 hover:text-gray-800 cursor-pointer">
 										<img
 											alt=""
 											src="https://tailwindcss.com/plus-assets/img/flags/flag-canada.svg"
@@ -62,7 +62,7 @@ export const Header: React.FC = () => {
 
 								{/* Search */}
 								<div className="flex lg:ml-6">
-									<a href="#" className="p-2 text-gray-400 hover:text-gray-500">
+									<a href="#" className="p-2 text-gray-400 hover:text-gray-500 cursor-pointer">
 										<span className="sr-only">Search</span>
 										<MagnifyingGlassIcon aria-hidden="true" className="size-6" />
 									</a>
@@ -75,7 +75,7 @@ export const Header: React.FC = () => {
 											<a
 												href="#"
 												onClick={() => setOpen(true)}
-												className="group -m-2 flex items-center p-2"
+												className="group -m-2 flex items-center p-2 cursor-pointer"
 											>
 												<ShoppingBagIcon aria-hidden="true" className="size-6 text-gray-400 group-hover:text-gray-500" />
 												<span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
@@ -93,7 +93,7 @@ export const Header: React.FC = () => {
 											storageService.removeItem('user_session');
 											window.location.reload();
 										}}
-										className="p-2 text-gray-400 hover:text-gray-500"
+										className="p-2 text-gray-400 hover:text-gray-500 cursor-pointer"
 									>
 										<span className="sr-only">Logout</span>
 										<svg className="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

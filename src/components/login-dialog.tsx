@@ -113,7 +113,7 @@ export const LoginDialog: React.FC<Props> = ({ open, onClose, defaultTab }) => {
 							<button
 								type="button"
 								onClick={() => onClose(false)}
-								className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+								className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 cursor-pointer"
 							>
 								<span className="sr-only">Close</span>
 								<XMarkIcon aria-hidden="true" className="size-6" />
@@ -124,7 +124,7 @@ export const LoginDialog: React.FC<Props> = ({ open, onClose, defaultTab }) => {
 							<div className="flex justify-center">
 								<img
 									alt="Your Company"
-									src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
+									src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=black&shade=900"
 									className="h-10 w-auto"
 								/>
 							</div>
@@ -137,9 +137,9 @@ export const LoginDialog: React.FC<Props> = ({ open, onClose, defaultTab }) => {
 											onClick={() => setActiveTab('signin')}
 											className={classNames(
 												activeTab === 'signin'
-													? 'border-indigo-500 text-indigo-600'
+													? 'border-black text-black'
 													: 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-												'whitespace-nowrap border-b-2 py-2 px-1 text-sm font-medium'
+												'whitespace-nowrap border-b-2 py-2 px-1 text-sm font-medium cursor-pointer'
 											)}
 										>
 											Sign In
@@ -148,9 +148,9 @@ export const LoginDialog: React.FC<Props> = ({ open, onClose, defaultTab }) => {
 											onClick={() => setActiveTab('signup')}
 											className={classNames(
 												activeTab === 'signup'
-													? 'border-indigo-500 text-indigo-600'
+													? 'border-black text-black'
 													: 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-												'whitespace-nowrap border-b-2 py-2 px-1 text-sm font-medium'
+												'whitespace-nowrap border-b-2 py-2 px-1 text-sm font-medium cursor-pointer'
 											)}
 										>
 											Sign Up
@@ -184,7 +184,7 @@ export const LoginDialog: React.FC<Props> = ({ open, onClose, defaultTab }) => {
 															"block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6",
 															signInManager.hasError('email')
 																? 'ring-red-300 focus:ring-red-600'
-																: 'ring-gray-300 focus:ring-indigo-600'
+																: 'ring-gray-300 focus:ring-black'
 														)}
 													/>
 													{signInManager.hasError('email') && (
@@ -199,7 +199,7 @@ export const LoginDialog: React.FC<Props> = ({ open, onClose, defaultTab }) => {
 														Password
 													</label>
 													<div className="text-sm">
-														<a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+														<a href="#" className="font-semibold text-black hover:text-gray-700 cursor-pointer">
 															Forgot password?
 														</a>
 													</div>
@@ -218,7 +218,7 @@ export const LoginDialog: React.FC<Props> = ({ open, onClose, defaultTab }) => {
 															"block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6",
 															signInManager.hasError('password')
 																? 'ring-red-300 focus:ring-red-600'
-																: 'ring-gray-300 focus:ring-indigo-600'
+																: 'ring-gray-300 focus:ring-black'
 														)}
 													/>
 													{signInManager.hasError('password') && (
@@ -230,7 +230,7 @@ export const LoginDialog: React.FC<Props> = ({ open, onClose, defaultTab }) => {
 											<div>
 												<button
 													type="submit"
-													className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+													className="flex w-full justify-center rounded-md bg-black px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black cursor-pointer"
 												>
 													Sign in
 												</button>
@@ -262,7 +262,7 @@ export const LoginDialog: React.FC<Props> = ({ open, onClose, defaultTab }) => {
 																"block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6",
 																signUpManager.hasError('firstName')
 																	? 'ring-red-300 focus:ring-red-600'
-																	: 'ring-gray-300 focus:ring-indigo-600'
+																	: 'ring-gray-300 focus:ring-black'
 															)}
 														/>
 														{signUpManager.hasError('firstName') && (
@@ -289,7 +289,7 @@ export const LoginDialog: React.FC<Props> = ({ open, onClose, defaultTab }) => {
 																"block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6",
 																signUpManager.hasError('lastName')
 																	? 'ring-red-300 focus:ring-red-600'
-																	: 'ring-gray-300 focus:ring-indigo-600'
+																	: 'ring-gray-300 focus:ring-black'
 															)}
 														/>
 														{signUpManager.hasError('lastName') && (
@@ -317,7 +317,7 @@ export const LoginDialog: React.FC<Props> = ({ open, onClose, defaultTab }) => {
 															"block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6",
 															signUpManager.hasError('email')
 																? 'ring-red-300 focus:ring-red-600'
-																: 'ring-gray-300 focus:ring-indigo-600'
+																: 'ring-gray-300 focus:ring-black'
 														)}
 													/>
 													{signUpManager.hasError('email') && (
@@ -344,7 +344,7 @@ export const LoginDialog: React.FC<Props> = ({ open, onClose, defaultTab }) => {
 															"block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6",
 															signUpManager.hasError('password')
 																? 'ring-red-300 focus:ring-red-600'
-																: 'ring-gray-300 focus:ring-indigo-600'
+																: 'ring-gray-300 focus:ring-black'
 														)}
 													/>
 													{signUpManager.hasError('password') && (
@@ -356,7 +356,7 @@ export const LoginDialog: React.FC<Props> = ({ open, onClose, defaultTab }) => {
 											<div>
 												<button
 													type="submit"
-													className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+													className="flex w-full justify-center rounded-md bg-black px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black cursor-pointer"
 												>
 													Sign up
 												</button>
